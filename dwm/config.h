@@ -4,9 +4,9 @@
 static const char font[]            = "-*-hack-regular-*-14-*-*-*-*-*-*-*";
 static const char normbordercolor[] = "#FFFFFF";/*333333 font color when selected*/ 
 static const char normbgcolor[]     = "#4D4D4D";/*051121i-6C6C6C bar color when not selected*/ 
-static const char normfgcolor[]     = "#1A1A1A";/*1A1A1A font clor when not selected*/
+static const char normfgcolor[]     = "#FFFFFF";/*1A1A1A font color when not selected*/
 static const char selbordercolor[]  = "#6C6C6C";/*4D4D4D window border color*/
-static const char selbgcolor[]      = "#4D4D4D";/*D4D4D4 selected window border color*/
+static const char selbgcolor[]      = "#1A1A1A";/*D4D4D4 selected window border color*/
 static const char selfgcolor[]      = "#D4D4D4";/*D4D4D4*/
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
