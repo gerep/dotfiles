@@ -16,6 +16,10 @@ set scrolloff=4
 set number
 " Fuzzyfinder https://github.com/junegunn/fzf
 set rtp+=~/.fzf
+" golint
+set rtp+=$GOPATH/src/github.com/golang/lint/misc/vim
+" run golint when saving with :w
+autocmd BufWritePost,FileWritePost *.go execute 'Lint' | cwindow
 " Make arrow keys useless, habit breaking
 noremap <Up> <NOP>
 noremap <Down> <NOP>
