@@ -3,7 +3,6 @@ execute pathogen#infect()
 filetype plugin indent on
 syntax on
 
-set list
 set encoding=utf-8
 set autoindent " automatically set indent of new line
 set smartindent
