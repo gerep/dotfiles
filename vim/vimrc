@@ -7,19 +7,23 @@ set encoding=utf-8
 set autoindent " automatically set indent of new line
 set smartindent
 set number " show line numbers 
-set tabstop=4
-set shiftwidth=4 " space characters for identation
 set hlsearch " highlight search results
 set noswapfile " do not create swap file
 set laststatus=2
 set scrolloff=4
 set number
-" Fuzzyfinder https://github.com/junegunn/fzf
-set rtp+=~/.fzf
-" golint
-set rtp+=$GOPATH/src/github.com/golang/lint/misc/vim
+
+autocmd Filetype ruby setlocal tabstop=2 shiftwidth=2
+autocmd Filetype go setlocal tabstop=4 shiftwidth=4
 " run golint when saving with :w
-autocmd BufWritePost,FileWritePost *.go execute 'Lint' | cwindow
+autocmd BufWritePost,FileWritePost *.go execute 'GoImports' | cwindow
+autocmd BufWritePost,FileWritePost *.go execute 'GoLint' | cwindow
+
+" Fuzzyfinder https://github.com/junegunn/fzf
+"set rtp+=~/.fzf
+" golint
+"set rtp+=$GOPATH/src/github.com/golang/lint/misc/vim
+
 " Make arrow keys useless, habit breaking
 noremap <Up> <NOP>
 noremap <Down> <NOP>
