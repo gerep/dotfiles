@@ -15,14 +15,10 @@ set number
 
 autocmd Filetype ruby setlocal tabstop=2 shiftwidth=2
 autocmd Filetype go setlocal tabstop=4 shiftwidth=4
+"
 " run golint when saving with :w
 autocmd BufWritePost,FileWritePost *.go execute 'GoImports' | cwindow
 autocmd BufWritePost,FileWritePost *.go execute 'GoLint' | cwindow
-
-" Fuzzyfinder https://github.com/junegunn/fzf
-"set rtp+=~/.fzf
-" golint
-"set rtp+=$GOPATH/src/github.com/golang/lint/misc/vim
 
 " Make arrow keys useless, habit breaking
 noremap <Up> <NOP>
