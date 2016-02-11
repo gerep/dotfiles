@@ -6,16 +6,15 @@ syntax on
 set encoding=utf-8
 set autoindent " automatically set indent of new line
 set smartindent
-set number " show line numbers 
+" set number " show line numbers 
 set hlsearch " highlight search results
 set noswapfile " do not create swap file
 set laststatus=2
 set scrolloff=4
-set number
 
 autocmd Filetype ruby setlocal tabstop=2 shiftwidth=2
 autocmd Filetype go setlocal tabstop=4 shiftwidth=4
-"
+
 " run golint when saving with :w
 autocmd BufWritePost,FileWritePost *.go execute 'GoImports' | cwindow
 autocmd BufWritePost,FileWritePost *.go execute 'GoLint' | cwindow
