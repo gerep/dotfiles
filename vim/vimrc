@@ -3,10 +3,6 @@ execute pathogen#infect()
 filetype plugin indent on
 syntax on
 
-" solarized theme
-set background=dark
-colorscheme solarized
-
 " display tabs and trailing spaces visually
 set list listchars=tab:\ \ ,trail:·
 set nowrap       "Don't wrap lines
