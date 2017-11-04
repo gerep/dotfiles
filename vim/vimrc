@@ -1,33 +1,194 @@
-execute pathogen#infect()
+call plug#begin('~/.vim/bundle')
+
+Plug 'fatih/vim-go'
+Plug 'SirVer/ultisnips'
+Plug 'AndrewRadev/splitjoin.vim'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'fatih/molokai'
+Plug 'scrooloose/nerdtree'
+Plug 'tpope/vim-fugitive'
+Plug 'Shougo/neocomplete.vim'
+
+let g:rehash256 = 1
+let g:molokai_original = 1
+colorscheme molokai
+
+let g:neocomplete#enable_at_startup = 1
 
 filetype plugin indent on
 syntax on
 
-set encoding=utf-8
-set autoindent " automatically set indent of new line
+let mapleader=","
+
+set nostartofline " Prevent the cursor from changing the current column when jumping to other lines within the window
 set smartindent
-set number " show line numbers 
-set hlsearch " highlight search results
-set noswapfile " do not create swap file
 set laststatus=2
-set scrolloff=4
-set colorcolumn=+1
+set encoding=utf-8              " Set default encoding to UTF-8
+set autoread                    " Automatically reread changed files without asking me anything
+set autoindent
+set backspace=indent,eol,start  " Makes backspace key more powerful.
+set incsearch                   " Shows the match while typing
+set hlsearch                    " Highlight found searches
 
-autocmd BufRead *.erb set filetype=ruby
-autocmd Filetype ruby setlocal tabstop=2 shiftwidth=2
-autocmd Filetype html setlocal tabstop=2 shiftwidth=2
-autocmd Filetype css setlocal tabstop=2 shiftwidth=2
-autocmd Filetype go setlocal tabstop=4 shiftwidth=4
+set noerrorbells             " No beeps
+set number                   " Show line numbers
+set showcmd                  " Show me what I'm typing
+set noswapfile               " Don't use swapfile
+set nobackup                 " Don't create annoying backup files
+set splitright               " Split vertical windows right to the current windows
+set splitbelow               " Split horizontal windows below to the current windows
+set autowrite                " Automatically save before :next, :make etc.
+set hidden
+set fileformats=unix,dos,mac " Prefer Unix over Windows over OS 9 formats
+set noshowmatch              " Do not show matching brackets by flickering
+set noshowmode               " We show the mode with airline or lightline
+set ignorecase               " Search case insensitive...
+set smartcase                " ... but not it begins with upper case
+set completeopt=menu,menuone
+set nocursorcolumn           " speed up syntax highlighting
+set nocursorline
+set updatetime=300
 
-" run golint when saving with :w
-autocmd BufWritePost,FileWritePost *.go execute 'GoImports' | cwindow
-autocmd BufWritePost,FileWritePost *.go execute 'GoLint' | cwindow
+" and your yaml
+au FileType yaml setlocal ts=2 sw=2 et
 
-" make arrow keys useless, habit breaking
-noremap <Up>    :echo "Ueeeeeepa!"<cr>
-noremap <Down>  :echo "Ueeeeeepa!"<cr>
-noremap <Left>  :echo "Ueeeeeepa!"<cr>
-noremap <Right> :echo "Ueeeeeepa!"<cr>
+" source code gets wrapped at <80 and auto-indented
+au FileType c,cpp,go,java,javascript,html,make setlocal tw=79 autoindent
+
+" makefiles and c have tabstops at 8 for portability
+au FileType make,c,cpp setlocal ts=8 sw=8
+
+" highlight stray spaces and tabs when out of insert mode
+" match ExtraWhitespace /\s\+$/
+highlight ExtraWhitespace ctermbg=darkgreen guibg=darkgreen
+au BufWinEnter * match ExtraWhitespace /\s\+$/
+au InsertEnter * match ExtraWhitespace /\s\+\%#\@<!$/
+au InsertLeave * match ExtraWhitespace /\s\+$/
+
+" performance hack
+if version >= 702
+  au BufWinLeave * call clearmatches()
+endif
+
+" I hold shift a lot, make :W work like :w and :Q like :q
+cabbr W w
+cabbr Q q
+
+" make buffer windows easier to navigate
+map <C-h> <C-w>h
+map <C-j> <C-w>j
+map <C-k> <C-w>k
+map <C-l> <C-w>l
+
+let g:go_fmt_autosave = 1
+let g:go_metalinter_autosave = 1
+let g:go_fmt_command = "goimports"
+let g:go_highlight_types = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_build_constraints = 1
+let g:go_addtags_transform = "camelcase"
+let g:go_auto_type_info=1
+let g:go_list_type = "quickfix"
+let g:go_def_mode="guru"
+
+autocmd FileType go nmap <leader>b  <Plug>(go-build)
+autocmd FileType go nmap <leader>r  <Plug>(go-run)
+autocmd FileType go nmap <leader>t  <Plug>(go-test)
+autocmd FileType go nmap <leader>c  <Plug>(go-coverage-toggle)
 
 " automatically rebalance windows on vim resize
 autocmd VimResized * :wincmd =
+
+map <C-n> :NERDTreeToggle<CR>
+let NERDTreeShowHidden=1
+
+
+"=====================================================
+"===================== STATUSLINE ====================
+
+let s:modes = {
+      \ 'n': 'NORMAL', 
+      \ 'i': 'INSERT', 
+      \ 'R': 'REPLACE', 
+      \ 'v': 'VISUAL', 
+      \ 'V': 'V-LINE', 
+      \ "\<C-v>": 'V-BLOCK',
+      \ 'c': 'COMMAND',
+      \ 's': 'SELECT', 
+      \ 'S': 'S-LINE', 
+      \ "\<C-s>": 'S-BLOCK', 
+      \ 't': 'TERMINAL'
+      \}
+
+let s:prev_mode = ""
+function! StatusLineMode()
+  let cur_mode = get(s:modes, mode(), '')
+
+  " do not update higlight if the mode is the same
+  if cur_mode == s:prev_mode
+    return cur_mode
+  endif
+
+  if cur_mode == "NORMAL"
+    exe 'hi! StatusLine ctermfg=236'
+    exe 'hi! myModeColor cterm=bold ctermbg=148 ctermfg=22'
+  elseif cur_mode == "INSERT"
+    exe 'hi! myModeColor cterm=bold ctermbg=23 ctermfg=231'
+  elseif cur_mode == "VISUAL" || cur_mode == "V-LINE" || cur_mode == "V_BLOCK"
+    exe 'hi! StatusLine ctermfg=236'
+    exe 'hi! myModeColor cterm=bold ctermbg=208 ctermfg=88'
+  endif
+
+  let s:prev_mode = cur_mode
+  return cur_mode
+endfunction
+
+function! StatusLineFiletype()
+  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : 'no ft') : ''
+endfunction
+
+function! StatusLinePercent()
+  return (100 * line('.') / line('$')) . '%'
+endfunction
+
+function! StatusLineLeftInfo()
+ let branch = fugitive#head()
+ let filename = '' != expand('%:t') ? expand('%:t') : '[No Name]'
+ if branch !=# ''
+   return printf("%s | %s", branch, filename)
+ endif
+ return filename
+endfunction
+
+exe 'hi! myInfoColor ctermbg=240 ctermfg=252'
+
+" start building our statusline
+set statusline=
+
+" mode with custom colors
+set statusline+=%#myModeColor#
+set statusline+=%{StatusLineMode()}
+set statusline+=%*
+
+" left information bar (after mode)
+set statusline+=%#myInfoColor#
+set statusline+=\ %{StatusLineLeftInfo()}
+set statusline+=\ %*
+
+" go command status (requires vim-go)
+set statusline+=%#goStatuslineColor#
+set statusline+=%{go#statusline#Show()}
+set statusline+=%*
+
+" right section seperator
+set statusline+=%=
+
+" filetype, percentage, line number and column number
+set statusline+=%#myInfoColor#
+set statusline+=\ %{StatusLineFiletype()}\ %{StatusLinePercent()}\ %l:%v
+set statusline+=\ %*
+
+call plug#end()
