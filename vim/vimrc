@@ -1,5 +1,6 @@
-call plug#begin('~/.vim/bundle')
+call plug#begin()
 
+Plug 'morhetz/gruvbox'
 Plug 'fatih/vim-go'
 Plug 'SirVer/ultisnips'
 Plug 'AndrewRadev/splitjoin.vim'
@@ -7,13 +8,17 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'fatih/molokai'
 Plug 'scrooloose/nerdtree'
 Plug 'tpope/vim-fugitive'
-Plug 'Shougo/neocomplete.vim'
+Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' }
+
+let g:deoplete#enable_at_startup = 1
 
 let g:rehash256 = 1
-let g:molokai_original = 1
-colorscheme molokai
+" let g:molokai_original = 1
+colorscheme gruvbox
+set background=dark
 
-let g:neocomplete#enable_at_startup = 1
+set mouse=a
+set inccommand=split
 
 filetype plugin indent on
 syntax on
